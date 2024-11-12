@@ -70,19 +70,23 @@ app.post("/api/login", async (req: Request, res: Response) => {
 	}
 });
 
+interface studentData {
+	name: string;
+	email: string;
+	dob: string;
+	course: string;
+}
 // POST request to register a student by email, DOB, name and course
 app.post("/api/register", async (req: Request, res: Response) => {
 	try {
-		const { name, email, dob, course } = req.body;
+		const students = req.body; // students must be an array of students
 
-		if (!name || !email || !dob || !course) res.status(400).send({ message: "all feilds are required!" });
-
-		const newStudent = await StudentLogin.create({
-			name,
-			dob,
-			email,
-			course,
+		students.forEach((student: studentData) => {
+			if (!student.name || !student.email || !student.dob || !student.course) res.status(400).send({ message: "all feilds are required!" });
 		});
+		// if (!name || !email || !dob || !course) res.status(400).send({ message: "all feilds are required!" });
+
+		const newStudent = await StudentLogin.insertMany(students);
 
 		res.status(201).send({ messgae: "Student Successfully added!" });
 	} catch (error) {
