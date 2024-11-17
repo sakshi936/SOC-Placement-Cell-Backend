@@ -3,7 +3,8 @@ import { Express, Request, Response, NextFunction } from "express";
 import connectDB from "./db";
 import dotenv from "dotenv";
 import { StudentLogin } from "./models/studentLoginData.model";
-
+import { LoginReqBody, studentData } from "./types";
+import studentRoutes from "./routers/studentProfile.route";
 dotenv.config({
 	path: "./.env",
 });
@@ -27,14 +28,9 @@ connectDB()
 		console.log("MONGO db connection failed !!!", err);
 	});
 
-// app.get("/api/login", (req: Request, res: Response) => {
-// 	res.send("Successfully Loggedin with TypeScript");
-// });
-
-interface LoginReqBody {
-	email: string;
-	password: string;
-}
+app.get("/api/login", (req: Request, res: Response) => {
+	res.send("Successfully Loggedin with TypeScript");
+});
 
 // POST request to search for a student by email and match the password with DOB
 app.post("/api/login", async (req: Request, res: Response) => {
@@ -49,33 +45,32 @@ app.post("/api/login", async (req: Request, res: Response) => {
 		// Check if both email and password are provided
 		if (!email || !password) {
 			res.status(400).send({ message: "Email and password are required" });
+			return;
 		}
 
 		// Find the student by email
 		const student = await StudentLogin.findOne({ email }); // StudentLogin Model
 		if (!student) {
 			res.status(404).send({ message: "Student not found with this email id!! " });
+			return;
 		}
 
 		// Check if the provided password matches the student's DOB
 		const formattedDOB = new Date(student.dob).toISOString().split("T")[0]; // Format DOB as 'YYYY-MM-DD'
 		if (password !== formattedDOB) {
 			res.status(401).send({ message: "Invalid password" });
+			return;
 		}
 
 		// If the email and password match, return success
 		res.status(200).send({ message: "Login successful", student });
+		return;
 	} catch (error) {
 		res.status(500).send({ message: "Server error", error: (error as Error).message });
+		return;
 	}
 });
 
-interface studentData {
-	name: string;
-	email: string;
-	dob: string;
-	course: string;
-}
 // POST request to register a student by email, DOB, name and course
 app.post("/api/register", async (req: Request, res: Response) => {
 	try {
@@ -88,8 +83,13 @@ app.post("/api/register", async (req: Request, res: Response) => {
 
 		const newStudent = await StudentLogin.insertMany(students);
 
-		res.status(201).send({ messgae: "Student Successfully added!" });
+		res.status(200).send({ messgae: "Student Successfully added!" });
+		return;
 	} catch (error) {
 		res.status(500).send({ message: "Server error", error: (error as Error).message });
+		return;
 	}
 });
+
+// Routes
+app.use("/api/student", studentRoutes); // Use the student routes

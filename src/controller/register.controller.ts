@@ -14,8 +14,8 @@ export const registerStundent = async (req: Request, res: Response) => {
 			course,
 		});
 
-		return res.status(201).send({ messgae: "Student Successfully added!" });
+		res.status(201).json({ messgae: "Student Successfully added!" });
 	} catch (error) {
-		return res.status(500).send({ message: "Server error", error: (error as Error).message });
+		res.status(500).json({ message: "Server error", error: (error as Error).message });
 	}
 };
