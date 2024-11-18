@@ -99,6 +99,12 @@ const studentProfileSchema = new mongoose.Schema(
 		hometown: { type: String, required: true },
 		state: { type: String, required: true },
 		passportPhoto: { type: String }, // URL or base64 encoded image
+
+		// current university details
+		universityName: { type: String },
+		course: { type: String },
+		current_semester: { type: String },
+
 		// Academic Information
 		ssc: {
 			percentage: { type: Number, required: true },
