@@ -5,7 +5,7 @@ const router = Router();
 
 // router.get("/createprofile", testingRoute);
 router.post("/", createProfile);
-router.get("/profile/:id", getStudentProfileByUserId);
+router.post("/profile", getStudentProfileByUserId);
 router.get("/profiles", getAllStudents);
 router.put("/update/:id", updateStudent);
 export default router;
