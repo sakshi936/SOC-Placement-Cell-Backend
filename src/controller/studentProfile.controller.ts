@@ -55,9 +55,16 @@ export const createProfile = async (req: Request, res: Response) => {
 
 export const getStudentProfileByUserId = async (req: Request, res: Response) => {
 	try {
+		const { userId } = req.body;
 		// finding student by (mongodb) registration id
-		const student = await studentProfileModel.findOne(req.body.id);
+		const student = await studentProfileModel.findOne({ userId });
 		//  return student profile if student profile found
+
+		if (!student) {
+			res.status(404).send({ message: "Student not found!! " });
+			return;
+		}
+
 		res.status(201).json({ message: "Student Profile Found!", student });
 		return;
 	} catch (error) {
