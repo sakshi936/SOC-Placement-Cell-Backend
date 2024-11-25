@@ -1,5 +1,7 @@
 import express from "express";
 import { Express, Request, Response, NextFunction } from "express";
+// const cors = require('cors');
+import cors from "cors";
 import connectDB from "./db";
 import dotenv from "dotenv";
 import { StudentLogin } from "./models/studentLoginData.model";
@@ -12,6 +14,12 @@ dotenv.config({
 const PORT = process.env.PORT || 7000;
 const app: Express = express();
 app.use(express.json());
+
+app.use(cors({
+	origin: 'http://localhost:3000', // Allow requests from this origin
+	methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
+	credentials: true, // If your frontend requires cookies or authorization headers
+}));
 
 // Database connection
 connectDB()
